@@ -20,8 +20,7 @@ const CreateProductSchema = z.object({
     }).min(3, "Error categoría debe contener mínimo 3 caracteres"),
     product_stock: z.number({
         required_error: "El stock del producto es obligatorio"
-    }).min(2, "Error el stock debe contener mínimo 2 caracteres")
-        .positive('El stock debe ser un número positivo'),
+    }).positive('El stock debe ser un número positivo'),
 })
 
 

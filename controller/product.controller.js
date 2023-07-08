@@ -9,6 +9,14 @@ const getAll = async () => {
     return products
 }
 
+const getProductsByStock = async () => {
+    await db.connect()
+    const products = await ProductModel.find({ product_stock: { $gt: 0 } })
+    await db.disconnect()
+
+    return products
+}
+
 const getProduct = async (id) => {
     await db.connect()
     const product = await ProductModel.findById(id)
@@ -32,6 +40,19 @@ const update = async (id, payload) => {
     return product
 }
 
+const sellProduct = async (id, cant) => {
+    await db.connect()
+    const product = await ProductModel.findById(id)
+    if (!product || +product.product_stock < +cant) {
+        return false
+    }
+    const newStock = Math.ceil(+product.product_stock - +cant)
+    product.product_stock = String(newStock)
+    await product.save()
+    await db.disconnect()
+    return true
+}
+
 const deleteProduct = async (id) => {
     await db.connect()
     const productDeleted = await ProductModel.findByIdAndDelete(id)
@@ -42,7 +63,9 @@ const deleteProduct = async (id) => {
 module.exports = {
     store,
     getAll,
+    getProductsByStock,
     update,
     deleteProduct,
+    sellProduct,
     getProduct
 }
